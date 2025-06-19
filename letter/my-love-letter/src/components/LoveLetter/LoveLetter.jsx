@@ -5,34 +5,23 @@ import audioFile from "./rangreza.mp3";
 const LoveLetter = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFullSize, setIsFullSize] = useState(false);
-  const twoYearsInSeconds = 2 * 365 * 24 * 3600;
-  const [timer, setTimer] = useState(twoYearsInSeconds);
+  const [timer, setTimer] = useState(2 * 365 * 24 * 3600); // 2 years in seconds
   const [timerStarted, setTimerStarted] = useState(false);
-  const audioRef = useRef(null);
   const timerRef = useRef(null);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && !timerStarted) {
-      console.log("Starting timer");
       setTimerStarted(true);
       timerRef.current = setInterval(() => {
-        setTimer((prev) => {
-          console.log("Timer tick", prev + 1);
-          return prev + 1;
-        });
+        setTimer((prev) => prev + 1);
       }, 1000);
     }
     if (!isOpen && timerStarted) {
-      console.log("Stopping timer");
       clearInterval(timerRef.current);
       setTimerStarted(false);
-      // Do not reset timer to 0, keep running continuously
-      // setTimer(0);
     }
-    return () => {
-      console.log("Cleaning up timer");
-      clearInterval(timerRef.current);
-    };
+    return () => clearInterval(timerRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
@@ -48,7 +37,6 @@ const LoveLetter = () => {
     setIsOpen(true);
     setTimeout(() => {
       setIsFullSize(true);
-      // Ensuring audio play is directly a result of this user interaction
       if (audioRef.current) {
         audioRef.current
           .play()
@@ -126,9 +114,10 @@ const LoveLetter = () => {
       </div>
       {isOpen && (
         <div className="heart-timer">
-          <span>First time I saw you:</span>
-          <br />
-          <span className="timer">{formatTime(timer)}</span>
+          <div className="timer">
+            <div>First time I saw you:</div>
+            <div>{formatTime(timer)}</div>
+          </div>
         </div>
       )}
     </>
